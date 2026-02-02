@@ -1,87 +1,60 @@
-# SEO Blog Platform
+# SEO Blog Platform - Backend API
 
-A professional, production-ready blog platform built with **Next.js**, **Express**, and **MongoDB**. Optimized for SEO with server-side rendering, dynamic sitemaps, and comprehensive meta tag management.
+A professional, production-ready RESTful API for a blog platform built with **Express.js** and **MongoDB**. Provides comprehensive endpoints for blog management, authentication, and SEO features.
 
 ## 🚀 Features
 
-### Public Features
-- ✅ Server-side rendered pages for optimal SEO
-- ✅ Home page with latest blog posts
-- ✅ Blog listing with pagination and category filtering
-- ✅ Individual blog pages with full SEO metadata
-- ✅ Category pages
-- ✅ About page
-- ✅ Responsive, modern design
+### Public API
+- ✅ Get all published blogs with pagination
+- ✅ Get single blog by slug
+- ✅ Category listing and filtering
 - ✅ Dynamic sitemap.xml generation
-- ✅ robots.txt configuration
+- ✅ robots.txt endpoint
 
-### Admin Features
+### Admin API (Protected)
 - ✅ Secure JWT-based authentication
 - ✅ Complete blog CRUD operations
-- ✅ Markdown editor with live preview
 - ✅ Draft/Publish workflow
 - ✅ Category management
-- ✅ SEO metadata editor for each blog
+- ✅ SEO metadata management
 - ✅ Automatic slug generation
 - ✅ Slug immutability after publishing
 
 ### SEO Features
-- ✅ Meta title and description
+- ✅ Meta title and description support
 - ✅ Keywords management
 - ✅ Canonical URLs
 - ✅ Open Graph tags
 - ✅ Twitter Card tags
-- ✅ Structured data
-- ✅ Server-side rendering (SSR)
-- ✅ Dynamic sitemap.xml
-- ✅ Optimized robots.txt
+- ✅ Structured data support
+- ✅ Dynamic sitemap generation
 
 ## 📁 Project Structure
 
 ```
-blog/
-├── backend/                    # Express API server
-│   ├── src/
-│   │   ├── config/            # Database configuration
-│   │   ├── models/            # MongoDB schemas
-│   │   ├── routes/            # API routes
-│   │   ├── middleware/        # Authentication middleware
-│   │   ├── controllers/       # Business logic
-│   │   └── utils/             # Helper functions
-│   ├── .env.example
-│   ├── package.json
-│   └── server.js
-│
-├── frontend/                   # Next.js application
-│   ├── src/
-│   │   ├── app/               # App router pages
-│   │   ├── components/        # Reusable components
-│   │   ├── lib/               # API client & utilities
-│   │   └── styles/            # CSS modules
-│   ├── public/
-│   ├── next.config.js
-│   └── package.json
-│
-└── README.md
+blog-backend/
+├── src/
+│   ├── config/            # Database configuration
+│   ├── models/            # MongoDB schemas (Blog, Category)
+│   ├── routes/            # API routes
+│   ├── middleware/        # Authentication middleware
+│   ├── controllers/       # Business logic
+│   └── utils/             # Helper functions
+├── .env.example           # Environment variables template
+├── .gitignore
+├── package.json
+└── server.js              # Application entry point
 ```
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- **Next.js 14** - React framework with App Router
-- **React 18** - UI library
-- **React Markdown** - Markdown rendering
-- **SimpleMDE** - Markdown editor
-- **Axios** - HTTP client
-- **date-fns** - Date formatting
-
-### Backend
 - **Node.js** - Runtime environment
 - **Express** - Web framework
 - **MongoDB** - Database
 - **Mongoose** - ODM
 - **JWT** - Authentication
 - **Slugify** - URL slug generation
+- **CORS** - Cross-origin resource sharing
 
 ## 📋 Prerequisites
 
@@ -91,18 +64,13 @@ blog/
 
 ## 🚀 Installation & Setup
 
-### 1. Clone the Repository
+### 1. Install Dependencies
 
 ```bash
-cd blog
-```
-
-### 2. Backend Setup
-
-```bash
-cd backend
 npm install
 ```
+
+### 2. Environment Configuration
 
 Create `.env` file from `.env.example`:
 
@@ -122,44 +90,17 @@ FRONTEND_URL=http://localhost:3000
 NODE_ENV=development
 ```
 
-Start the backend server:
+### 3. Start the Server
 
 ```bash
-# Development
+# Development mode with auto-reload
 npm run dev
 
-# Production
+# Production mode
 npm start
 ```
 
 The API will be available at `http://localhost:5000`
-
-### 3. Frontend Setup
-
-```bash
-cd ../frontend
-npm install
-```
-
-Create `.env.local` file:
-
-```bash
-cp .env.local.example .env.local
-```
-
-Edit `.env.local`:
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000
-```
-
-Start the frontend development server:
-
-```bash
-npm run dev
-```
-
-The website will be available at `http://localhost:3000`
 
 ## 📊 Database Schema
 
@@ -224,25 +165,49 @@ The website will be available at `http://localhost:3000`
 | PUT | `/api/admin/categories/:id` | Update category |
 | DELETE | `/api/admin/categories/:id` | Delete category |
 
-## 👤 Admin Access
+For detailed API documentation, see [API_DOCUMENTATION.md](./API_DOCUMENTATION.md)
 
-1. Navigate to `http://localhost:3000/admin/login`
-2. Use credentials from your `.env` file:
-   - Username: `admin` (or your configured username)
-   - Password: Your configured password
+## 🔐 Authentication
+
+The API uses JWT (JSON Web Tokens) for authentication.
+
+### Login
+```bash
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "your-password"
+}
+```
+
+Response:
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "username": "admin"
+}
+```
+
+### Using the Token
+Include the token in the Authorization header for protected endpoints:
+
+```bash
+Authorization: Bearer <your-token>
+```
 
 ## 🌐 Deployment
 
-### Option 1: Vercel (Frontend) + Railway/Render (Backend)
-
-#### Backend Deployment (Railway/Render)
+### Railway Deployment
 
 1. **Create a MongoDB Atlas database** (free tier available)
    - Get your connection string
 
-2. **Deploy to Railway/Render**:
+2. **Deploy to Railway**:
    - Connect your GitHub repository
-   - Set environment variables:
+   - Railway will auto-detect Node.js
+   - Set environment variables in Railway dashboard:
      ```
      MONGODB_URI=your-mongodb-atlas-uri
      JWT_SECRET=your-production-secret
@@ -252,62 +217,51 @@ The website will be available at `http://localhost:3000`
      FRONTEND_URL=https://your-frontend-domain.vercel.app
      NODE_ENV=production
      ```
-   - Deploy from `backend` directory
 
-#### Frontend Deployment (Vercel)
+3. **Deploy**: Railway will automatically deploy on push to main branch
 
-1. **Deploy to Vercel**:
-   ```bash
-   cd frontend
-   vercel
-   ```
+### Render Deployment
 
-2. **Set environment variables** in Vercel dashboard:
-   ```
-   NEXT_PUBLIC_API_URL=https://your-backend-url.railway.app
-   ```
+1. Create new Web Service
+2. Connect your repository
+3. Configure:
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+4. Add environment variables
+5. Deploy
 
-3. **Deploy**:
-   ```bash
-   vercel --prod
-   ```
-
-### Option 2: Single Server (VPS/Cloud)
+### VPS/Cloud Server
 
 1. **Setup MongoDB** on your server or use MongoDB Atlas
 
-2. **Clone repository** on server:
+2. **Clone repository**:
    ```bash
    git clone your-repo-url
-   cd blog
+   cd blog-backend
    ```
 
-3. **Setup Backend**:
+3. **Install dependencies**:
    ```bash
-   cd backend
    npm install
+   ```
+
+4. **Configure environment**:
+   ```bash
    # Create .env with production values
-   npm start
+   nano .env
    ```
 
-4. **Setup Frontend**:
-   ```bash
-   cd frontend
-   npm install
-   npm run build
-   npm start
-   ```
-
-5. **Use PM2** for process management:
+5. **Use PM2 for process management**:
    ```bash
    npm install -g pm2
-   pm2 start backend/server.js --name blog-api
-   pm2 start frontend/npm --name blog-frontend -- start
+   pm2 start server.js --name blog-api
    pm2 save
    pm2 startup
    ```
 
-6. **Setup Nginx** as reverse proxy
+6. **Setup Nginx as reverse proxy** (optional)
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ## 🔧 Configuration
 
@@ -318,46 +272,8 @@ The website will be available at `http://localhost:3000`
 - Spaces replaced with hyphens
 - **Immutable after publishing** (prevents broken links)
 
-### SEO Best Practices
-- All pages use SSR for search engine crawling
-- Meta tags dynamically generated per page
-- Sitemap updates automatically with new content
-- Canonical URLs prevent duplicate content issues
-- Open Graph tags for social media sharing
-
-## 📝 Creating Your First Blog Post
-
-1. Login to admin dashboard
-2. Click "New Blog Post"
-3. Fill in:
-   - Title (required)
-   - Category (required)
-   - Content in Markdown (required)
-   - Excerpt (optional, auto-generated if empty)
-   - SEO metadata (optional, defaults to title/excerpt)
-4. Choose status: Draft or Published
-5. Click "Create Blog"
-
-## 🎨 Customization
-
-### Changing Colors
-Edit `frontend/src/styles/globals.css`:
-
-```css
-:root {
-  --primary: #6366f1;
-  --secondary: #ec4899;
-  --accent: #14b8a6;
-  /* ... */
-}
-```
-
-### Adding New Pages
-Create new files in `frontend/src/app/your-page/page.js`
-
-### Modifying API
-Add new routes in `backend/src/routes/index.js`
-Add controllers in `backend/src/controllers/`
+### CORS Configuration
+Update `FRONTEND_URL` in `.env` to allow requests from your frontend domain.
 
 ## 🐛 Troubleshooting
 
@@ -367,12 +283,30 @@ Add controllers in `backend/src/controllers/`
 - For Atlas, whitelist your IP address
 
 ### CORS Errors
-- Verify `FRONTEND_URL` in backend `.env`
-- Check CORS configuration in `backend/server.js`
+- Verify `FRONTEND_URL` in `.env`
+- Check CORS configuration in `server.js`
 
-### Build Errors
-- Clear Next.js cache: `rm -rf .next`
-- Reinstall dependencies: `rm -rf node_modules && npm install`
+### Authentication Issues
+- Ensure `JWT_SECRET` is set
+- Check token expiration (default: 24h)
+- Verify admin credentials in `.env`
+
+## 📝 Development
+
+### Running Tests
+```bash
+npm test
+```
+
+### Code Linting
+```bash
+npm run lint
+```
+
+### Database Seeding (Optional)
+```bash
+npm run seed
+```
 
 ## 📄 License
 
@@ -388,4 +322,4 @@ For issues or questions, please open an issue on GitHub.
 
 ---
 
-**Built with ❤️ using Next.js, Express, and MongoDB**
+**Built with ❤️ using Express.js and MongoDB**
